@@ -135,9 +135,7 @@ All stored requests are lost when the application is restarted. Persistent datab
 
 ## Running tests
 
-Tests will be added under the `tests/` directory.
-
-They will eventually be run with:
+Run the automated test suite from the project root:
 
 ```bash
 python -m pytest -v
@@ -185,7 +183,7 @@ Before production use, the project will need:
 - [x] Define Pydantic request models
 - [x] Implement in-memory storage
 - [x] Add basic FastAPI endpoints
-- [ ] Add automated tests
+- [x] Add automated tests
 - [ ] Add request status updates
 - [ ] Replace in-memory storage with SQLite or PostgreSQL
 - [ ] Add Docker support
