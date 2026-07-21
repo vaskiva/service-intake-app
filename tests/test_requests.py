@@ -13,8 +13,8 @@ VALID_REQUEST = {
     "category": "plumbing",
     "description": "Water is leaking under the kitchen sink.",
     "postal_code": "10300",
-    "customer_name": "John Smith",
-    "email": "john@example.com",
+    "customer_name": "Tiina Smith",
+    "email": "tiina@example.com",
 }
 
 
@@ -46,7 +46,7 @@ def test_create_service_request() -> None:
     assert data["status"] == "received"
     assert data["language"] == "en"
     assert data["category"] == "plumbing"
-    assert data["email"] == "john@example.com"
+    assert data["email"] == "tiina@example.com"
 
 
 def test_reject_invalid_service_request() -> None:
@@ -73,7 +73,7 @@ def test_list_service_requests() -> None:
         **VALID_REQUEST,
         "category": "electrical",
         "description": "The kitchen ceiling light no longer turns on.",
-        "email": "jane@example.com",
+        "email": "daniel@example.com",
     }
 
     client.post(
@@ -104,7 +104,7 @@ def test_get_service_request_by_id() -> None:
 
     assert response.status_code == 200
     assert response.json()["id"] == request_id
-    assert response.json()["email"] == "john@example.com"
+    assert response.json()["email"] == "tiina@example.com"
 
 
 def test_get_missing_service_request() -> None:
@@ -114,3 +114,52 @@ def test_get_missing_service_request() -> None:
     assert response.json() == {
         "detail": "Service request not found"
     }
+
+def test_update_service_request_status() -> None:
+    response = client.post(
+        "/requests",
+        json=VALID_REQUEST,
+    )
+
+    request_id = response.json()["id"]
+
+    response = client.patch(
+        f"/requests/{request_id}/status",
+        json={"status": "accepted"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["id"] == request_id
+    assert response.json()["status"] == "accepted"
+
+    get_response = client.get(f"/requests/{request_id}")
+
+    assert get_response.status_code == 200
+    assert get_response.json()["status"] == "accepted"
+
+
+def test_update_missing_service_request() -> None:
+    response = client.patch(
+        "/requests/999/status",
+        json={"status": "accepted"},
+    )
+
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Service request not found"
+    }
+
+def test_reject_invalid_request_status() -> None:
+    create_response = client.post(
+        "/requests",
+        json=VALID_REQUEST,
+    )
+
+    request_id = create_response.json()["id"]
+
+    response = client.patch(
+        f"/requests/{request_id}/status",
+        json={"status": "something_random"},
+    )
+
+    assert response.status_code == 422

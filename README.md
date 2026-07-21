@@ -107,8 +107,8 @@ http://127.0.0.1:8000/docs
   "category": "plumbing",
   "description": "Water is leaking under the kitchen sink.",
   "postal_code": "10300",
-  "customer_name": "John Smith",
-  "email": "john@example.com"
+  "customer_name": "Tiina Smith",
+  "email": "tiina@example.com"
 }
 ```
 
@@ -120,8 +120,8 @@ Example response:
   "category": "plumbing",
   "description": "Water is leaking under the kitchen sink.",
   "postal_code": "10300",
-  "customer_name": "John Smith",
-  "email": "john@example.com",
+  "customer_name": "Tiina Smith",
+  "email": "tiina@example.com",
   "id": 1,
   "status": "received"
 }
@@ -184,7 +184,7 @@ Before production use, the project will need:
 - [x] Implement in-memory storage
 - [x] Add basic FastAPI endpoints
 - [x] Add automated tests
-- [ ] Add request status updates
+- [x] Add request status updates
 - [ ] Replace in-memory storage with SQLite or PostgreSQL
 - [ ] Add Docker support
 - [ ] Deploy to a Raspberry Pi

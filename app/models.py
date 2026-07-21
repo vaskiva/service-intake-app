@@ -47,3 +47,6 @@ class ServiceRequestCreate(BaseModel):
 class ServiceRequest(ServiceRequestCreate):
     id: int
     status: RequestStatus
+
+class ServiceRequestStatusUpdate(BaseModel):
+    status: RequestStatus      

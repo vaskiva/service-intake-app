@@ -34,3 +34,19 @@ def get_request(request_id: int) -> ServiceRequest | None:
             return service_request
 
     return None
+
+def update_request_status(
+    request_id: int,
+    new_status: RequestStatus,
+) -> ServiceRequest | None:
+    for index, service_request in enumerate(_requests):
+        if service_request.id == request_id:
+            updated_request = service_request.model_copy(
+                update={"status": new_status}
+            )
+
+            _requests[index] = updated_request
+
+            return updated_request
+
+    return None

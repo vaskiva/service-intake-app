@@ -1,8 +1,17 @@
 from fastapi import FastAPI, HTTPException, status
 
-from app.models import ServiceRequest, ServiceRequestCreate
-from app.storage import create_request, get_request, list_requests
+from app.models import (
+    ServiceRequest,
+    ServiceRequestCreate,
+    ServiceRequestStatusUpdate,
+)
 
+from app.storage import (
+    create_request,
+    get_request,
+    list_requests,
+    update_request_status,
+)
 
 app = FastAPI(
     title="Service Intake API",
@@ -42,6 +51,27 @@ def read_requests() -> list[ServiceRequest]:
 )
 def read_request(request_id: int) -> ServiceRequest:
     service_request = get_request(request_id)
+
+    if service_request is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Service request not found",
+        )
+
+    return service_request
+
+@app.patch(
+    "/requests/{request_id}/status",
+    response_model=ServiceRequest,
+)
+def change_request_status(
+    request_id: int,
+    data: ServiceRequestStatusUpdate,
+) -> ServiceRequest:
+    service_request = update_request_status(
+        request_id=request_id,
+        new_status=data.status,
+    )
 
     if service_request is None:
         raise HTTPException(
