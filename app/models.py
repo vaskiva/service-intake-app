@@ -1,6 +1,8 @@
 from enum import Enum
 
 from pydantic import BaseModel, EmailStr, Field
+from sqlmodel import Field as SQLField
+from sqlmodel import SQLModel
 
 
 class Language(str, Enum):
@@ -50,3 +52,22 @@ class ServiceRequest(ServiceRequestCreate):
 
 class ServiceRequestStatusUpdate(BaseModel):
     status: RequestStatus      
+
+class ServiceRequestRecord(SQLModel, table=True):
+    __tablename__ = "service_requests"
+
+    id: int | None = SQLField(
+        default=None,
+        primary_key=True,
+    )
+
+    language: Language
+    category: Category
+    description: str
+    postal_code: str
+    customer_name: str
+    email: str
+
+    status: RequestStatus = SQLField(
+        default=RequestStatus.RECEIVED,
+    )    

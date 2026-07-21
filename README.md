@@ -22,6 +22,9 @@ The project is an early prototype for a digital service intake system that could
 - Uvicorn
 - Pytest
 - Git
+- SQLModel
+- SQLAlchemy
+- SQLite
 
 ## Project structure
 
@@ -129,9 +132,16 @@ Example response:
 
 ## Data storage
 
-The current version stores service requests in memory.
+The current version stores service requests in a local SQLite database.
 
-All stored requests are lost when the application is restarted. Persistent database storage will be added later.
+The database is created automatically when the application starts.
+
+The local database file is:
+
+```text
+service_intake.db
+
+The database file is excluded from Git version control.
 
 ## Running tests
 
@@ -185,7 +195,7 @@ Before production use, the project will need:
 - [x] Add basic FastAPI endpoints
 - [x] Add automated tests
 - [x] Add request status updates
-- [ ] Replace in-memory storage with SQLite or PostgreSQL
+- [x] Replace in-memory storage with SQLite (later PostgreSQL)
 - [ ] Add Docker support
 - [ ] Deploy to a Raspberry Pi
 - [ ] Add multilingual summaries

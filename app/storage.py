@@ -1,52 +1,60 @@
+from sqlmodel import Session, select
+
 from app.models import (
     RequestStatus,
-    ServiceRequest,
     ServiceRequestCreate,
+    ServiceRequestRecord,
 )
 
 
-_requests: list[ServiceRequest] = []
-_next_id = 1
-
-
-def create_request(data: ServiceRequestCreate) -> ServiceRequest:
-    global _next_id
-
-    service_request = ServiceRequest(
-        id=_next_id,
-        status=RequestStatus.RECEIVED,
+def create_request(
+    session: Session,
+    data: ServiceRequestCreate,
+) -> ServiceRequestRecord:
+    service_request = ServiceRequestRecord(
         **data.model_dump(),
+        status=RequestStatus.RECEIVED,
     )
 
-    _requests.append(service_request)
-    _next_id += 1
+    session.add(service_request)
+    session.commit()
+    session.refresh(service_request)
 
     return service_request
 
 
-def list_requests() -> list[ServiceRequest]:
-    return _requests.copy()
+def list_requests(
+    session: Session,
+) -> list[ServiceRequestRecord]:
+    statement = select(ServiceRequestRecord)
+
+    return list(session.exec(statement).all())
 
 
-def get_request(request_id: int) -> ServiceRequest | None:
-    for service_request in _requests:
-        if service_request.id == request_id:
-            return service_request
+def get_request(
+    session: Session,
+    request_id: int,
+) -> ServiceRequestRecord | None:
+    return session.get(ServiceRequestRecord, request_id)
 
-    return None
 
 def update_request_status(
+    session: Session,
     request_id: int,
     new_status: RequestStatus,
-) -> ServiceRequest | None:
-    for index, service_request in enumerate(_requests):
-        if service_request.id == request_id:
-            updated_request = service_request.model_copy(
-                update={"status": new_status}
-            )
+) -> ServiceRequestRecord | None:
+    service_request = session.get(
+        ServiceRequestRecord,
+        request_id,
+    )
 
-            _requests[index] = updated_request
+    if service_request is None:
+        return None
 
-            return updated_request
+    service_request.status = new_status
 
-    return None
+    session.add(service_request)
+    session.commit()
+    session.refresh(service_request)
+
+    return service_request
