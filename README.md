@@ -25,6 +25,8 @@ The project is an early prototype for a digital service intake system that could
 - SQLModel
 - SQLAlchemy
 - SQLite
+- Docker 
+- Docker Compose
 
 ## Project structure
 
@@ -35,7 +37,11 @@ service-intake-api/
 │   ├── main.py
 │   ├── models.py
 │   └── storage.py
+├── data/
 ├── tests/
+|── Dockerfile
+|── .dockerignore
+|── compose.yaml 
 ├── .gitignore
 ├── README.md
 └── requirements.txt
@@ -129,20 +135,61 @@ Example response:
   "status": "received"
 }
 ```
+## Running with Docker
+
+The API can be built and run locally using Docker Compose.
+
+Start the application
+docker compose up -d --build
+
+Check that the service is running:
+
+docker compose ps
+
+Test the health endpoint:
+
+curl http://localhost:8000/health
+
+Expected response:
+
+{"status":"ok"}
+
+Interactive API documentation is available at:
+
+http://localhost:8000/docs
+View logs
+docker compose logs -f api
+Stop the application
+docker compose down
 
 ## Data storage
 
-The current version stores service requests in a local SQLite database.
+The application uses SQLite for persistent storage.
 
-The database is created automatically when the application starts.
+When running locally without Docker, the database is stored in:
 
-The local database file is:
+data/service_intake.db
 
-```text
-service_intake.db 
-```
+When running in Docker, the database is stored inside the container at:
 
-The database file is excluded from Git version control.
+/app/data/service_intake.db
+
+Docker Compose mounts a named Docker volume to /app/data:
+
+service-intake-data
+
+This separates persistent data from the container lifecycle. Containers can therefore be stopped, removed, and recreated without deleting submitted service requests.
+
+For example:
+
+docker compose down
+docker compose up -d
+
+The database remains available through the Docker volume.
+
+docker compose down -v also removes the associated volume and should only be used when the stored data is intentionally being deleted.
+
+The SQLite database file is excluded from Git version control.
 
 ## Running tests
 
@@ -160,13 +207,13 @@ listing service requests
 retrieving a request by ID
 returning 404 for a missing request
 
+
 ## Production deployment
 
 Production deployment is not implemented yet.
 
 The planned deployment path is:
 
-```text
 GitHub repository
         ↓
 Docker image
@@ -176,18 +223,17 @@ Docker Compose
 Raspberry Pi or Linux server
         ↓
 Health monitoring and backups
-```
 
-Before production use, the project will need:
+Before production use, the project will still need:
 
-- persistent database storage
-- authentication and authorization
-- secure configuration management
-- HTTPS
-- automated tests
-- logging and monitoring
-- backups
-- privacy and data-retention policies
+authentication and authorization
+secure configuration and secrets management
+HTTPS
+logging and monitoring
+backups
+database migration strategy
+privacy and data-retention policies
+deployment and update procedures
 
 ## Roadmap
 
@@ -196,12 +242,30 @@ Before production use, the project will need:
 - [x] Add basic FastAPI endpoints
 - [x] Add automated tests
 - [x] Add request status updates
-- [x] Replace in-memory storage with SQLite (later PostgreSQL)
-- [ ] Add Docker support
-- [ ] Deploy to a Raspberry Pi
+- [x] Replace in-memory storage with SQLite 
+- [ ] Evaluate PostgreSQL for a later production deployment
+- [x] Add Docker support
+- [X] Add Docker compose
+- [x] Add persistent docker storage
+- [ ] Add container health check
+- [ ] Configure application settings with environment variables
+- [ ] Deploy to a Raspberry Pi / Linux server
 - [ ] Add multilingual summaries
 - [ ] Add an AI-assisted request classification workflow
 
 ## Project status
 
-Early development prototype. Not ready for production use.
+Early development prototype.
+
+The current version includes:
+
+REST API built with FastAPI
+validated request models
+SQLite persistence
+request status updates
+automated tests
+Docker image
+Docker Compose configuration
+persistent Docker volume
+
+The application is suitable for local development and testing, but is not yet intended for production use.

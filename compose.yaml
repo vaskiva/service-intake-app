@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    image: service-intake-api:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - service-intake-data:/app/data
+
+volumes:
+  service-intake-data:
+    name: service-intake-data
