@@ -139,7 +139,8 @@ The database is created automatically when the application starts.
 The local database file is:
 
 ```text
-service_intake.db
+service_intake.db 
+```
 
 The database file is excluded from Git version control.
 
