@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 .env
 service_intake.db
+data/*.db
