@@ -1,3 +1,5 @@
+import os
+
 from collections.abc import Generator
 
 from sqlmodel import Session, SQLModel, create_engine
@@ -6,7 +8,10 @@ from sqlmodel import Session, SQLModel, create_engine
 from app.models import ServiceRequestRecord  # noqa: F401
 
 
-DATABASE_URL = "sqlite:///./data/service_intake.db"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///./data/service_intake.db",
+)
 
 engine = create_engine(
     DATABASE_URL,

@@ -1,12 +1,25 @@
 services:
   api:
     build: .
-    image: service-intake-api:latest
+    image: service-intake-app:latest
     ports:
       - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:///./data/service_intake.db
     volumes:
       - service-intake-data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 volumes:
   service-intake-data:
-    name: service-intake-data
