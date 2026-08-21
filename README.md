@@ -2,7 +2,7 @@
 
 A multilingual FastAPI service for receiving and managing home maintenance service requests.
 
-The project is an early prototype for a digital service intake system that could help small field service businesses receive clearer customer requests in Finnish, Swedish, and English.
+The project is an early prototype for a digital service intake system that could help small field service businesses receive clearer customer requests in Finnish.
 
 ## Current features
 
@@ -10,9 +10,13 @@ The project is an early prototype for a digital service intake system that could
 - List all service requests
 - Retrieve a service request by ID
 - Validate customer input with Pydantic
-- Support Finnish, Swedish, and English request languages
 - Categorize requests by service type
 - Return appropriate HTTP status codes
+- Docker Compose
+- persistent Docker volume
+- environment-based configuration
+- container health check
+- GitHub Actions CI
 
 ## Technology
 
@@ -27,6 +31,7 @@ The project is an early prototype for a digital service intake system that could
 - SQLite
 - Docker 
 - Docker Compose
+- GitHub Actions
 
 ## Project structure
 
@@ -207,6 +212,13 @@ listing service requests
 retrieving a request by ID
 returning 404 for a missing request
 
+## CI
+
+- run tests
+- validates Compose config
+- builds and starts the app
+- waits for healthcheck
+- performs HTTP smoke test
 
 ## Production deployment
 
@@ -247,10 +259,10 @@ deployment and update procedures
 - [x] Add Docker support
 - [X] Add Docker compose
 - [x] Add persistent docker storage
-- [ ] Add container health check
-- [ ] Configure application settings with environment variables
+- [x] Add container health check
+- [x] Configure application settings with environment variables
+- [x] Add GitHub Actions CI
 - [ ] Deploy to a Raspberry Pi / Linux server
-- [ ] Add multilingual summaries
 - [ ] Add an AI-assisted request classification workflow
 
 ## Project status
