@@ -5,3 +5,4 @@ __pycache__/
 .env
 service_intake.db
 data/*.db
+.env.production
