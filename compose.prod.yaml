@@ -1,0 +1,35 @@
+name: service-intake-prod
+
+services:
+  api:
+    image: ghcr.io/vaskiva/service-intake-app:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    init: true
+
+    ports:
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
+
+    environment:
+      DATABASE_URL: sqlite:////app/data/service_intake.db
+
+    volumes:
+      - service-intake-data:/app/data
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  service-intake-data:
